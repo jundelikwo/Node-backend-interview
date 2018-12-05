@@ -1,14 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Controller = require('./controller');
+const Config = require('./config');
+
+const { TOKEN_NOT_PASSED } = Config.errors;
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    console.log(`Request Method ${req.method}`);
     res.send(`
         <!DOCTYPE html>
         <html>
@@ -24,7 +26,7 @@ app.get('/', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { body } = req;
-    console.log(`Request Method ${req.method} Request Body ${JSON.stringify(body)}`);
+    
     // @ Call the loginController signToken function with username and password 
     // as params in the request body.  
     Controller.loginController.signToken(body, (err, data) => {
@@ -36,5 +38,33 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.listen(3001);
-console.log('Server running on port 3001');
+app.post('/jsonPatch', (req, res) => {
+    const { body, headers } = req;
+    const { auth } = headers;
+
+    // Check if there is an auth header
+    if (!auth) {
+        res.status(TOKEN_NOT_PASSED.statusCode).json(TOKEN_NOT_PASSED);
+    } else {
+        // If there is an auth header. Proceed to call the loginController, verifyToken function 
+        // to verify the JWT token
+        Controller.loginController.verifyToken(auth, err => {
+            if (err) {
+                res.status(err.statusCode).json(err);
+            } else {
+                // If the token is valid, proceed to call the jsonPatchController, JSONpatcher
+                // function inorder to patch the JSON object
+                Controller.jsonPatchController.JSONpatcher(body, (error, patchedJSON) => {
+                    if (error) {
+                        res.status(error.statusCode).json(error);
+                    } else {
+                        res.send(patchedJSON);
+                    }
+                });
+            }
+        });
+    }
+});
+
+app.listen(Config.constants.PORT);
+console.log('Server running on port ', Config.constants.PORT);

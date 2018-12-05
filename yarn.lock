@@ -837,6 +837,10 @@ js-yaml@^3.5.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+json-patch@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/json-patch/-/json-patch-0.7.0.tgz#2598958ea67fa3660dae8ee684d35407b37f4b98"
+
 json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
