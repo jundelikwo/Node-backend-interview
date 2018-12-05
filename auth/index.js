@@ -15,6 +15,12 @@ const TOKEN_GENERATION_ERROR = {
     type: 'TOKEN_GENERATION_ERROR'
 };
 
+const TOKEN_VERIFICATION_FAILED = {
+    statusCode: 401,
+    customMessage: 'Token Passed is Invalid',
+    type: 'TOKEN_VERIFICATION_FAILED'
+};
+
 const options = {
     expiresIn: Config.TOKEN_EXPIRATION_IN_SECONDS
 };
@@ -34,6 +40,20 @@ const setToken = (data, callback) => {
     }
 };
 
+const verifyToken = (token, callback) => {
+	// @token - token for verification 
+	Jwt.verify(token, 'shhhhh', (err, decoded) => {
+		if (err) {
+            console.log('verifyToken', TOKEN_VERIFICATION_FAILED);
+			callback(TOKEN_VERIFICATION_FAILED);
+		} else {
+            console.log('decoded', decoded);
+			callback(null, decoded);
+		}
+	});
+};
+
 module.exports = {
-    setToken
+    setToken,
+    verifyToken
 };
