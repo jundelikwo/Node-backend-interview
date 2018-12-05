@@ -1,0 +1,14 @@
+{
+  "name": "backend-interview",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "Jonathan Utsu Undelikwo",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "eslint-config-rallycoding": "^3.2.0"
+  }
+}
