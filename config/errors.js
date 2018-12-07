@@ -22,8 +22,31 @@ const TOKEN_NOT_PASSED = {
     type: 'TOKEN_NOT_PASSED'
 };
 
+const THUMBNAIL_URL_NOT_PROVIDED = {
+    statusCode: 401,
+    customMessage: 'Thumbnail Creation Failed. URL was not passed.',
+    type: 'THUMBNAIL_URL_NOT_PROVIDED'
+};
+
+const THUMBNAIL_URL_NOT_AN_IMAGE = {
+    statusCode: 401,
+    customMessage: 'Thumbnail Creation Failed. URL provided is not an image.',
+    type: 'THUMBNAIL_URL_NOT_AN_IMAGE'
+};
+
+const errorCreatingThumbnail = msg => {
+    return {
+        statusCode: 400,
+        customMessage: `Thumbnail Creation Failed. ${msg}.`,
+        type: msg.toUpperCase()
+    };
+};
+
 module.exports = {
+    errorCreatingThumbnail,
     JSON_PATCH_ERROR,
+    THUMBNAIL_URL_NOT_AN_IMAGE,
+    THUMBNAIL_URL_NOT_PROVIDED,
     TOKEN_GENERATION_ERROR,
     TOKEN_NOT_PASSED,
     TOKEN_VERIFICATION_FAILED

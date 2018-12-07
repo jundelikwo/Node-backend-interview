@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const Controller = require('./controller');
@@ -22,6 +24,40 @@ app.get('/', (req, res) => {
                 <h3>Please check the documentation file</h3>
         </html>
     `);
+});
+
+app.get('/createThumbnail', (req, res) => {
+    const { url } = req.query;
+    const { auth } = req.headers;
+
+    // Check if there is an auth header
+    if (!auth) {
+        res.status(TOKEN_NOT_PASSED.statusCode).json(TOKEN_NOT_PASSED);
+    } else {
+        // If there is an auth header. Proceed to call the loginController, verifyToken function 
+        // to verify the JWT token
+        Controller.loginController.verifyToken(auth, err => {
+            if (err) {
+                res.status(err.statusCode).json(err);
+            } else {
+                // If the token is valid, proceed to call the createThumbnailController,
+                // createThumbnail function inorder to generate a thumbnail
+                Controller.createThumbnailController.createThumbnail(url, (error, result) => {
+                    if (error) {
+                        res.status(error.statusCode).json(error);
+                    } else {
+                        const thumbnailPath = path.join(__dirname, result);
+                        res.sendFile(thumbnailPath);
+                        req.on('end', () => {
+                            // once a thumbnail is generated proceed
+                            // to delete it from the file system
+                            fs.unlink(thumbnailPath);
+                        });
+                    }
+                });
+            }
+        });
+    }
 });
 
 app.post('/login', (req, res) => {
